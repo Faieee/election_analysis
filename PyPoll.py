@@ -7,14 +7,19 @@
 import csv
 import os
 
-# read results file
+# file paths
 openFilePath = os.path.join("resources", "election_results.csv")
-with open(openFilePath) as electionData:
+writeFilePath = os.path.join("analysis", "election_analysis.txt")
 
-    print(electionData)
+# read analysis file
+with open(openFilePath) as electionData:
+    fileReader = csv.reader(electionData)                   # initialize reader
+
+    header = next(fileReader)                               # print header row
+    print(header)
 
 # write analysis file
-writeFilePath = os.path.join("analysis", "election_analysis.txt")
-with open(writeFilePath, "w") as outFile:
-    outFile.write("Hello World!")
+with open(writeFilePath, "w") as electionAnalysis:
+    electionAnalysis.write("Counties in the Election\n------------------\n")
+    electionAnalysis.write("Arapahoe\nDenver\nJefferson")
 
