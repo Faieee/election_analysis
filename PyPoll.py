@@ -17,8 +17,7 @@ totalVotes = 0
 with open(openFilePath) as electionData:                                # read analysis file
     fileReader = csv.reader(electionData)                               # initialize reader
 
-    header = next(fileReader)                                           # print header row
-    print(header)
+    header = next(fileReader)
 
     for row in fileReader:
         totalVotes += 1
@@ -30,22 +29,38 @@ with open(openFilePath) as electionData:                                # read a
 
         candidateVotes[candidateName] += 1
 
-    print(candidateVotes)
+    # print(candidateVotes)
 
-winningCandidate = ""
-winningCount = 0
-winningPercentage = 0
-for candidateName in candidateVotes:                                    # find vote percentages and winner
-    votes = candidateVotes[candidateName]
-    votePercentage = float(votes) / float(totalVotes) * 100
-    print(f"{candidateName} received {votePercentage:.1f}% of the votes.")
+with open(writeFilePath, "w") as electionAnalysis:                      # analyze/write analysis file
+    electionSummary = (
+        f"\nElection Results\n"
+        f"------------------------\n"
+        f"Total Votes: {totalVotes:,}\n"
+        f"------------------------\n"
+    )
+    electionAnalysis.write(electionSummary)
 
-    if candidateVotes[candidateName] > winningCount:
-        winningCandidate = candidateName
-        winningCount = votes
-        winningPercentage = votePercentage
+    winningCandidate = ""                                               # find vote percentages and winner
+    winningCount = 0
+    winningPercentage = 0
+    for candidateName in candidateVotes:
+        votes = candidateVotes[candidateName]
+        votePercentage = float(votes) / float(totalVotes) * 100
+        electionAnalysis.write(f"{candidateName}: {votePercentage:.1f}% ({votes:,})\n")
 
-print(f"\nWinner is {winningCandidate} with {winningPercentage:.1f}% of the votes ({winningCount})")
+        if candidateVotes[candidateName] > winningCount:
+            winningCandidate = candidateName
+            winningCount = votes
+            winningPercentage = votePercentage
 
-with open(writeFilePath, "w") as electionAnalysis:                      # write analysis file
-    exit(0)
+    winningSummary = (
+        f"------------------------\n"
+        f"Winner: {winningCandidate}\n"
+        f"Winning Vote Count: {winningCount:,}\n"
+        f"Winning Percentage: {winningPercentage:.1f}%\n"
+        f"------------------------\n"
+    )
+    electionAnalysis.write(winningSummary)
+
+
+
